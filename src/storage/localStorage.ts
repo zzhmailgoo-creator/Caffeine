@@ -59,8 +59,8 @@ export function createSampleRecords(): RecordItem[] {
   const now = new Date()
 
   return [
-    createRecord('Morning Americano', 120, hoursAgo(now, 5.5).toISOString()),
-    createRecord('Afternoon Tea', 40, hoursAgo(now, 2).toISOString()),
+    createRecord('上午美式咖啡', 120, hoursAgo(now, 5.5).toISOString()),
+    createRecord('下午茶', 40, hoursAgo(now, 2).toISOString()),
   ].sort((left, right) => new Date(right.consumedAt).getTime() - new Date(left.consumedAt).getTime())
 }
 

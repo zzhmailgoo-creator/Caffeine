@@ -33,6 +33,15 @@ import type { AgeGroup, MetabolismSpeed, RecordItem, Settings } from './types/ca
 
 const ageOptions: AgeGroup[] = ['under18', 'adult', 'over65']
 const metabolismOptions: MetabolismSpeed[] = ['fast', 'standard', 'slow']
+const recordLabelMap: Record<string, string> = {
+  'Morning Americano': '上午美式咖啡',
+  'Afternoon Tea': '下午茶',
+  Espresso: '意式浓缩',
+  Americano: '美式咖啡',
+  Tea: '茶饮',
+  Monster: '魔爪',
+  'Custom drink': '自定义饮品',
+}
 
 function App() {
   const [records, setRecords] = useState<RecordItem[]>(() => loadRecords())
@@ -350,11 +359,13 @@ function App() {
               <div className="space-y-3">
                 {records.map((record) => (
                   <div
-                    key={record.id}
-                    className="flex items-center justify-between rounded-[1rem] border border-[rgba(24,28,33,0.06)] bg-white px-4 py-3"
+                      key={record.id}
+                      className="flex items-center justify-between rounded-[1rem] border border-[rgba(24,28,33,0.06)] bg-white px-4 py-3"
                   >
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-[color:var(--heading)]">{record.label}</p>
+                      <p className="truncate font-medium text-[color:var(--heading)]">
+                        {localizeRecordLabel(record.label)}
+                      </p>
                       <p className="text-sm text-[color:var(--muted)]">
                         {record.mg} mg · {new Date(record.consumedAt).toLocaleString()}
                       </p>
@@ -447,4 +458,8 @@ function formatLocalDateTimeInput(date: Date) {
   const minutes = String(date.getMinutes()).padStart(2, '0')
 
   return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+function localizeRecordLabel(label: string) {
+  return recordLabelMap[label] ?? label
 }
