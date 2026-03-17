@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --page: #f4f5f7;
+  --heading: #17181a;
+  --text: #2c2f33;
+  --muted: #727882;
+  --ring: rgba(66, 86, 119, 0.08);
+  color: var(--text);
+  background: var(--page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: Georgia, 'Times New Roman', serif;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.94), transparent 26%),
+    linear-gradient(180deg, #f7f8fa 0%, #f1f3f6 100%);
+}
+
+body,
+button,
+input,
+select {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI',
+    sans-serif;
+}
+
+input,
+select,
+button,
+textarea {
+  color-scheme: light;
+}
+
+input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(133, 125, 116, 0.18);
+  color: #1f1c19;
+}
