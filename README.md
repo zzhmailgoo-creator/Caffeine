@@ -1,73 +1,127 @@
-# React + TypeScript + Vite
+# Caffeine Tracker Pro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个基于 `React + TypeScript + Vite` 构建的咖啡因摄入追踪应用，用来帮助用户记录每日饮品摄入，并估算当前残留、今日累计以及预计回落到休息阈值以下的时间。
 
-Currently, two official plugins are available:
+这个项目的目标不是做医疗诊断，而是提供一个更清晰、更易用的日常追踪工具。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- 记录常见饮品摄入，支持自定义饮品与咖啡因含量
+- 基于吸收期 + 半衰期衰减的简化模型估算咖啡因变化
+- 展示当前估算残留、今日累计摄入、预计回落时间
+- 提供未来 24 小时趋势图
+- 支持年龄范围、代谢速度、休息阈值等轻量设置
+- 使用 `localStorage` 持久化本地数据
+- 提供适合本地使用的双击启动脚本 `start-dev.cmd`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Preview
 
-## Expanding the ESLint configuration
+当前界面风格偏向简洁的健康类工具应用，使用路径为：
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. 先添加一条饮品记录
+2. 再查看核心指标变化
+3. 最后结合趋势图判断后续影响
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Recharts
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
+
+### Requirements
+
+- Node.js 18+
+- npm 9+
+
+### Install
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Run In Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+默认开发地址：
+
+```text
+http://127.0.0.1:5173/
+```
+
+如果你希望直接双击启动，也可以使用项目根目录下的：
+
+```text
+start-dev.cmd
+```
+
+当前脚本会固定使用：
+
+```text
+http://127.0.0.1:4173/
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+## Project Structure
+
+```text
+.
+├─ public/
+├─ src/
+│  ├─ engine/          # 咖啡因估算逻辑
+│  ├─ storage/         # 本地存储读写
+│  ├─ types/           # 类型定义
+│  ├─ App.tsx          # 主页面
+│  ├─ index.css        # 全局样式
+│  └─ main.tsx         # 应用入口
+├─ Caffeine.md         # 项目计划书
+├─ start-dev.cmd       # Windows 双击启动脚本
+├─ package.json
+└─ README.md
+```
+
+## Core Logic
+
+项目使用的是面向消费级产品的简化估算模型，而不是医学级药代动力学模型：
+
+- 摄入后有一个短暂吸收阶段
+- 达到峰值后按半衰期逐步衰减
+- 多次摄入会叠加计算
+- 用户可以通过年龄范围和代谢速度做轻量调整
+
+这意味着结果更适合日常参考，不适合医学判断。
+
+## Product Notes
+
+- “预计回落时间”表示估算值回落到阈值以下的时间
+- “当前估算残留”是趋势参考，不代表精确体内浓度
+- 不同体质、饮食、睡眠、药物和作息都可能影响实际感受
+
+## Roadmap
+
+- [ ] 编辑已有记录
+- [ ] 更完整的历史统计
+- [ ] 更完善的 PWA 支持
+- [ ] 更细致的移动端交互
+- [ ] 图表与页面的性能优化
+
+## License
+
+MIT
