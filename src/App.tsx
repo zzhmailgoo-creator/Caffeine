@@ -143,26 +143,8 @@ function App() {
           </p>
         </header>
 
-        <main className="mt-7 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-          <section className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <MetricCard
-                label="当前估算残留"
-                value={`${currentRemaining.toFixed(0)} mg`}
-                note="此刻体内的大致残留"
-              />
-              <MetricCard
-                label="今日累计摄入"
-                value={`${totalToday.toFixed(0)} mg`}
-                note="今天到目前为止的总摄入"
-              />
-              <MetricCard
-                label="预计回落时间"
-                value={thresholdTime}
-                note={thresholdStatusMessage}
-              />
-            </div>
-
+        <main className="mt-7 space-y-4">
+          <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <Panel
               title="添加记录"
               subtitle="选择饮品和时间，快速记下这一次摄入。"
@@ -231,6 +213,97 @@ function App() {
               ) : null}
             </Panel>
 
+            <div className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                <MetricCard
+                  label="当前估算残留"
+                  value={`${currentRemaining.toFixed(0)} mg`}
+                  note="此刻体内的大致残留"
+                />
+                <MetricCard
+                  label="今日累计摄入"
+                  value={`${totalToday.toFixed(0)} mg`}
+                  note="今天到目前为止的总摄入"
+                />
+                <MetricCard
+                  label="预计回落时间"
+                  value={thresholdTime}
+                  note={thresholdStatusMessage}
+                />
+              </div>
+
+              <Panel title="设置" subtitle="根据习惯调整估算方式。">
+                <div className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <SelectField
+                      label="年龄范围"
+                      value={settings.ageGroup}
+                      onChange={(value) =>
+                        setSettings((prev) => ({ ...prev, ageGroup: value as AgeGroup }))
+                      }
+                      options={ageOptions.map((option) => ({
+                        label: ageLabelMap[option],
+                        value: option,
+                      }))}
+                    />
+                    <SelectField
+                      label="代谢速度"
+                      value={settings.metabolism}
+                      onChange={(value) =>
+                        setSettings((prev) => ({ ...prev, metabolism: value as MetabolismSpeed }))
+                      }
+                      options={metabolismOptions.map((option) => ({
+                        label: metabolismLabelMap[option],
+                        value: option,
+                      }))}
+                    />
+                  </div>
+
+                  <label className="flex flex-col gap-2 text-sm text-[color:var(--muted)]">
+                    休息阈值 (mg)
+                    <input
+                      type="number"
+                      min="5"
+                      max="120"
+                      step="1"
+                      value={sleepThresholdInput}
+                      onChange={(event) => {
+                        const { value } = event.target
+                        setSleepThresholdInput(value)
+
+                        if (value === '') return
+
+                        const parsed = Number(value)
+                        if (!Number.isFinite(parsed)) return
+
+                        setSettings((prev) => ({
+                          ...prev,
+                          sleepThresholdMg: parsed,
+                        }))
+                      }}
+                      onBlur={() => {
+                        const parsed = Number(sleepThresholdInput)
+                        if (!Number.isFinite(parsed)) {
+                          setSleepThresholdInput(String(settings.sleepThresholdMg))
+                          return
+                        }
+
+                        const normalized = Math.min(120, Math.max(5, parsed))
+                        setSettings((prev) => ({
+                          ...prev,
+                          sleepThresholdMg: normalized,
+                        }))
+                        setSleepThresholdInput(String(normalized))
+                      }}
+                      className="rounded-[1rem] border border-[rgba(24,28,33,0.08)] bg-white px-4 py-3 text-[color:var(--heading)] outline-none transition focus:border-[rgba(66,86,119,0.18)] focus:ring-4 focus:ring-[rgba(66,86,119,0.08)]"
+                    />
+                  </label>
+                </div>
+              </Panel>
+            </div>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
             <Panel
               title="24 小时趋势"
               subtitle="查看接下来 24 小时的变化趋势。"
@@ -283,77 +356,6 @@ function App() {
                 </ResponsiveContainer>
               </div>
             </Panel>
-          </section>
-
-          <aside className="space-y-4">
-            <Panel title="设置" subtitle="根据习惯调整估算方式。">
-              <div className="space-y-4">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <SelectField
-                    label="年龄范围"
-                    value={settings.ageGroup}
-                    onChange={(value) =>
-                      setSettings((prev) => ({ ...prev, ageGroup: value as AgeGroup }))
-                    }
-                    options={ageOptions.map((option) => ({
-                      label: ageLabelMap[option],
-                      value: option,
-                    }))}
-                  />
-                  <SelectField
-                    label="代谢速度"
-                    value={settings.metabolism}
-                    onChange={(value) =>
-                      setSettings((prev) => ({ ...prev, metabolism: value as MetabolismSpeed }))
-                    }
-                    options={metabolismOptions.map((option) => ({
-                      label: metabolismLabelMap[option],
-                      value: option,
-                    }))}
-                  />
-                </div>
-
-                <label className="flex flex-col gap-2 text-sm text-[color:var(--muted)]">
-                  休息阈值 (mg)
-                  <input
-                    type="number"
-                    min="5"
-                    max="120"
-                    step="1"
-                    value={sleepThresholdInput}
-                    onChange={(event) => {
-                      const { value } = event.target
-                      setSleepThresholdInput(value)
-
-                      if (value === '') return
-
-                      const parsed = Number(value)
-                      if (!Number.isFinite(parsed)) return
-
-                      setSettings((prev) => ({
-                        ...prev,
-                        sleepThresholdMg: parsed,
-                      }))
-                    }}
-                    onBlur={() => {
-                      const parsed = Number(sleepThresholdInput)
-                      if (!Number.isFinite(parsed)) {
-                        setSleepThresholdInput(String(settings.sleepThresholdMg))
-                        return
-                      }
-
-                      const normalized = Math.min(120, Math.max(5, parsed))
-                      setSettings((prev) => ({
-                        ...prev,
-                        sleepThresholdMg: normalized,
-                      }))
-                      setSleepThresholdInput(String(normalized))
-                    }}
-                    className="rounded-[1rem] border border-[rgba(24,28,33,0.08)] bg-white px-4 py-3 text-[color:var(--heading)] outline-none transition focus:border-[rgba(66,86,119,0.18)] focus:ring-4 focus:ring-[rgba(66,86,119,0.08)]"
-                  />
-                </label>
-              </div>
-            </Panel>
 
             <Panel title="最近记录" subtitle="按时间顺序查看刚刚记录的内容。">
               <div className="space-y-3">
@@ -381,7 +383,7 @@ function App() {
                 ))}
               </div>
             </Panel>
-          </aside>
+          </section>
         </main>
       </div>
     </div>

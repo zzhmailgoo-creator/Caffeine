@@ -10,17 +10,16 @@ export const defaultSettings: Settings = {
 }
 
 export function loadRecords(): RecordItem[] {
-  const fallback = createSampleRecords()
-
-  if (typeof window === 'undefined') return fallback
+  if (typeof window === 'undefined') return []
 
   try {
     const raw = window.localStorage.getItem(RECORDS_KEY)
-    if (!raw) return fallback
+    if (!raw) return []
     const parsed = JSON.parse(raw) as RecordItem[]
-    return Array.isArray(parsed) ? parsed : fallback
+    if (!Array.isArray(parsed)) return []
+    return isSeededDemoRecords(parsed) ? [] : parsed
   } catch {
-    return fallback
+    return []
   }
 }
 
@@ -55,15 +54,15 @@ export function createRecord(label: string, mg: number, consumedAt: string): Rec
   }
 }
 
-export function createSampleRecords(): RecordItem[] {
-  const now = new Date()
+function isSeededDemoRecords(records: RecordItem[]) {
+  if (records.length === 0 || records.length > 2) return false
 
-  return [
-    createRecord('上午美式咖啡', 120, hoursAgo(now, 5.5).toISOString()),
-    createRecord('下午茶', 40, hoursAgo(now, 2).toISOString()),
-  ].sort((left, right) => new Date(right.consumedAt).getTime() - new Date(left.consumedAt).getTime())
-}
+  const demoLabels = new Set([
+    'Morning Americano',
+    'Afternoon Tea',
+    '上午美式咖啡',
+    '下午茶',
+  ])
 
-function hoursAgo(base: Date, hours: number) {
-  return new Date(base.getTime() - hours * 60 * 60 * 1000)
+  return records.every((record) => demoLabels.has(record.label))
 }
