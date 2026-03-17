@@ -124,4 +124,4 @@ npm run lint
 
 ## License
 
-MIT
+AGPL-3.0
